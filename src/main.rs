@@ -11,6 +11,7 @@ use tokio::main;
 #[main]
 async fn main() {
 
+
     let mut listener = bedrock_rs::protocol::listener::Listener::new(
         ListenerConfig {
             name: String::from("My Server"),

@@ -1,0 +1,4 @@
+Recovered manifest with next_file=20 manifest_num=19 log_num=18 prev_log_num=0 last_seq=5358
+reusing manifest "Hoffnung/db\\MANIFEST-000016"
+Recovering log file "\\\\?\\C:\\Sync\\RustRover\\bedrock-rs_test\\Hoffnung\\db\\000018.log"
+reusing log file "\\\\?\\C:\\Sync\\RustRover\\bedrock-rs_test\\Hoffnung\\db\\000018.log"

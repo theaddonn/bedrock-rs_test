@@ -70,6 +70,7 @@ name = "bedrock-rs"
 version = "0.1.0"
 dependencies = [
  "bedrock_core",
+ "nbt",
  "packs",
  "protocol",
  "serialize",
@@ -463,6 +464,14 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "nbt"
+version = "0.1.0"
+dependencies = [
+ "bedrock_core",
+ "serde",
 ]
 
 [[package]]
