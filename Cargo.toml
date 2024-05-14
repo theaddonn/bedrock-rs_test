@@ -8,6 +8,11 @@ edition = "2021"
 [dependencies]
 bedrock-rs = { path = "../bedrock-rs" }
 
+rusty-leveldb = "3.0.0"
+miniz_oxide = "0.7.2"
+
+input-macro = "0.2.0"
+
 tokio = { version = "1.37.0", features = ["full"] }
 byteorder = "1.5.0"
 rand = "0.8.5"
