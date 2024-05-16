@@ -15,7 +15,6 @@ use bedrock_rs::protocol::compression::CompressionMethods;
 use bedrock_rs::protocol::compression::zlib::ZlibCompression;
 use bedrock_rs::protocol::listener::ListenerConfig;
 use bedrock_rs::protocol::login::{handle_login_server_side, LoginServerSideOptions};
-use byteorder::{LittleEndian, ReadBytesExt};
 use tokio::main;
 
 use miniz_oxide::deflate::{compress_to_vec, compress_to_vec_zlib};
@@ -23,6 +22,7 @@ use miniz_oxide::inflate::{decompress_to_vec, decompress_to_vec_zlib};
 use rusty_leveldb::compressor::NoneCompressor;
 use rusty_leveldb::{Compressor, CompressorList, Options, DB, LdbIterator};
 use std::rc::Rc;
+use byteorder::LittleEndian;
 use input_macro::input;
 
 /// A zlib compressor that with zlib wrapper
@@ -105,11 +105,34 @@ pub fn mcpe_options(compression_level: u8) -> Options {
 
 #[main]
 async fn main() {
-    // let data = include_bytes!("../Hoffnung/level.dat").to_vec();
+    use std::io::Cursor;
+    use nbt::NbtTag;
+
+    let data = vec![
+        10, 6, 0, 109, 121, 32, 110, 98, 116,
+        8, 7, 0, 77, 121, 32, 84, 101, 120, 116,
+        15, 0, 84, 104, 105, 115, 32, 105, 115,
+        32, 109, 121, 32, 116, 101, 120, 116, 3,
+        8, 0, 77, 121, 32, 105, 110, 116, 51, 50,
+        42, 0, 0, 0, 0
+    ];
+
+    let mut cursor = Cursor::new(data);
+
+    let (name, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cursor).unwrap();
+
+    println!("{:#?}: {:#?}", name, tag);
+
+    loop {
+
+    }
+
+    // let mut data = include_bytes!("../nbt_example_file.nbt").to_vec();
     // let mut cur = Cursor::new(data.clone());
     //
     // let (name, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
     // println!("DATA: {:#?}", (&name, &tag));
+
     // cur.consume(8);
     // let (name, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
     // println!("DATA: {:#?}", (&name, &tag));
@@ -136,7 +159,7 @@ async fn main() {
     //
     // println!("DATA: \n{res:#?}\n\n{tag:#?}");
     // println!("  ");
-    // println!("DATA: \n{data:#?}");
+    // println!("DATA: \n{data:?}");
 
     // loop {
     //
