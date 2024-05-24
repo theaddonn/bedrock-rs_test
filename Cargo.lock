@@ -72,9 +72,9 @@ dependencies = [
  "bedrock_core",
  "nbt",
  "packs",
- "protocol",
- "serialize",
- "serialize_derive",
+ "proto",
+ "proto_core",
+ "proto_derive",
  "world",
 ]
 
@@ -636,7 +636,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "protocol"
+name = "proto"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
@@ -644,18 +644,45 @@ dependencies = [
  "byteorder",
  "flate2",
  "jsonwebtoken",
+ "nbt",
  "num-derive",
  "num-traits",
+ "proto_core",
+ "proto_derive",
  "rak-rs",
  "rand",
  "ring",
  "serde_json",
- "serialize",
- "serialize_derive",
  "snap",
  "tokio",
+ "uuid",
  "varint-rs",
  "x509-cert",
+]
+
+[[package]]
+name = "proto_core"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "bedrock_core",
+ "byteorder",
+ "jsonwebtoken",
+ "nbt",
+ "serde_json",
+ "thiserror",
+ "varint-rs",
+]
+
+[[package]]
+name = "proto_derive"
+version = "0.1.0"
+dependencies = [
+ "bedrock_core",
+ "proc-macro2",
+ "proto_core",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -825,28 +852,6 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
-]
-
-[[package]]
-name = "serialize"
-version = "0.1.0"
-dependencies = [
- "bedrock_core",
- "byteorder",
- "nbt",
- "varint-rs",
-]
-
-[[package]]
-name = "serialize_derive"
-version = "0.1.0"
-dependencies = [
- "bedrock_core",
- "bytes",
- "proc-macro2",
- "quote",
- "serialize",
- "syn",
 ]
 
 [[package]]
@@ -1041,6 +1046,12 @@ name = "untrusted"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ecb6da28b8a351d773b68d5825ac39017e680750f980f3a1a85cd8dd28a47c1"
+
+[[package]]
+name = "uuid"
+version = "1.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a183cf7feeba97b4dd1c0d46788634f6221d87fa961b305bed08c851829efcc0"
 
 [[package]]
 name = "varint-rs"

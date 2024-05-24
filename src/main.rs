@@ -1,20 +1,10 @@
-use std::collections::HashMap;
-use std::io::{BufRead, Cursor};
 use std::net::SocketAddrV4;
-use std::path::Path;
-use std::process::exit;
 use std::str::FromStr;
-use bedrock_rs::nbt;
-use bedrock_rs::nbt::endian::little_endian_network::NbtLittleEndianNetwork;
-use bedrock_rs::nbt::endian::little_endian::NbtLittleEndian;
 
-use bedrock_rs::nbt::NbtTag;
-use bedrock_rs::nbt::NbtTag::Float64;
-
-use bedrock_rs::protocol::compression::CompressionMethods;
-use bedrock_rs::protocol::compression::zlib::ZlibCompression;
-use bedrock_rs::protocol::listener::ListenerConfig;
-use bedrock_rs::protocol::login::{handle_login_server_side, LoginServerSideOptions};
+use bedrock_rs::proto::compression::CompressionMethods;
+use bedrock_rs::proto::compression::zlib::ZlibCompression;
+use bedrock_rs::proto::listener::ListenerConfig;
+use bedrock_rs::proto::login::{handle_login_server_side, LoginServerSideOptions};
 use tokio::main;
 
 use miniz_oxide::deflate::{compress_to_vec, compress_to_vec_zlib};
@@ -22,8 +12,9 @@ use miniz_oxide::inflate::{decompress_to_vec, decompress_to_vec_zlib};
 use rusty_leveldb::compressor::NoneCompressor;
 use rusty_leveldb::{Compressor, CompressorList, Options, DB, LdbIterator};
 use std::rc::Rc;
-use byteorder::LittleEndian;
-use input_macro::input;
+use bedrock_rs::core::types::ivar32;
+use bedrock_rs::proto::gamepacket::GamePacket;
+use bedrock_rs::proto::packets::disconnect::DisconnectPacket;
 
 /// A zlib compressor that with zlib wrapper
 struct ZlibCompressor(u8);
@@ -105,112 +96,7 @@ pub fn mcpe_options(compression_level: u8) -> Options {
 
 #[main]
 async fn main() {
-    use std::io::Cursor;
-    use nbt::NbtTag;
-
-    let data = vec![
-        10, 6, 0, 109, 121, 32, 110, 98, 116,
-        8, 7, 0, 77, 121, 32, 84, 101, 120, 116,
-        15, 0, 84, 104, 105, 115, 32, 105, 115,
-        32, 109, 121, 32, 116, 101, 120, 116, 3,
-        8, 0, 77, 121, 32, 105, 110, 116, 51, 50,
-        42, 0, 0, 0, 0
-    ];
-
-    let mut cursor = Cursor::new(data);
-
-    let (name, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cursor).unwrap();
-
-    println!("{:#?}: {:#?}", name, tag);
-
-    loop {
-
-    }
-
-    // let mut data = include_bytes!("../nbt_example_file.nbt").to_vec();
-    // let mut cur = Cursor::new(data.clone());
-    //
-    // let (name, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
-    // println!("DATA: {:#?}", (&name, &tag));
-
-    // cur.consume(8);
-    // let (name, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
-    // println!("DATA: {:#?}", (&name, &tag));
-    // let mut buf = vec![];
-    //
-    // tag.nbt_serialize::<NbtLittleEndian>(name, &mut buf).unwrap();
-    //
-    // assert_eq!(data, buf);
-    //
-    // println!("SUCCESS!");
-
-    // let mut map = HashMap::new();
-    // map.insert("MEE".to_string(), NbtTag::String("AFRIKA".to_string()));
-    //
-    // let tag = NbtTag::Compound(map);
-    //
-    // let mut data = vec![];
-    //
-    // tag.nbt_serialize::<NbtLittleEndian>("NEW", &mut data).unwrap();
-    //
-    // let mut cur = Cursor::new(data.clone());
-    //
-    // let res = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur);
-    //
-    // println!("DATA: \n{res:#?}\n\n{tag:#?}");
-    // println!("  ");
-    // println!("DATA: \n{data:?}");
-
-    // loop {
-    //
-    // }
-    //
-    //
-    // let path = "Hoffnung/db/";
-    // const COMPRESSION_LEVEL: u8 = 10;
-    // let opt = mcpe_options(COMPRESSION_LEVEL);
-    // let mut db = DB::open(path, opt).unwrap();
-    //
-    // let mut iter = db.new_iter().unwrap();
-    //
-    // let mut key = vec![];
-    // let mut val = vec![];
-    //
-    // loop {
-    //     iter.current(&mut key, &mut val);
-    //
-    //     let mut cur = Cursor::new(val.clone());
-    //     let res = NbtTag::nbt_deserialize::<NbtLittleEndianNetwork>(&mut cur);
-    //
-    //     println!("{:?}: {:?}", String::from_utf8_lossy(&*key), String::from_utf8_lossy(&*val));
-    //
-    //     println!("\nNBT\n{:#?}", res);
-    //
-    //     input!();
-    //
-    //     if !iter.advance() {
-    //         break;
-    //     };
-    // }
-    //
-    //
-    // exit(0);
-
-
-    //
-    // let mut cursor = Cursor::new(include_bytes!("../nbt_example_file.nbt").to_vec());
-    //
-    // let (mut name, mut tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cursor).unwrap();
-    //
-    // let mut buf = vec![];
-    //
-    // println!("{name:?}: {tag:#?}");
-    //
-    // NbtTag::nbt_serialize::<NbtLittleEndianNetwork>(&tag, name, &mut buf).unwrap();
-    //
-    // println!("INPUT:  {:?}\nOUTPUT: {:?}", include_bytes!("../nbt_example_file.nbt"), buf);
-
-    let mut listener = bedrock_rs::protocol::listener::Listener::new(
+    let mut listener = bedrock_rs::proto::listener::Listener::new(
         ListenerConfig {
             name: String::from("My Server"),
             sub_name: String::from("bedrock-rs"),
@@ -223,19 +109,33 @@ async fn main() {
 
     listener.start().await.unwrap();
 
-    let mut conn = listener.accept().await.unwrap();
+    loop {
+        let mut conn = listener.accept().await.unwrap();
 
-    println!("started!");
+        tokio::spawn(async move {
+            println!("started!");
 
-    handle_login_server_side(&mut conn, LoginServerSideOptions {
-        compression: CompressionMethods::Zlib(ZlibCompression{ threshold: 1024, compression_level: 9 }),
-        encryption: false,
-        authentication_enabled: false,
-        allowed_proto_versions: vec![671],
-    }).await.unwrap();
+            let res_message = match handle_login_server_side(&mut conn, LoginServerSideOptions {
+                compression: CompressionMethods::Zlib(ZlibCompression { threshold: 1024, compression_level: 9 }),
+                encryption: false,
+                authentication_enabled: false,
+                allowed_proto_versions: vec![671, 662],
+            }).await {
+                Ok(_) => { "success!".to_string() }
+                Err(e) => { format!("ERR({e:?})") }
+            };
 
-    println!("login successful!");
+            conn.send_gamepackets(vec![GamePacket::Disconnect(
+                DisconnectPacket {
+                    reason: ivar32(0),
+                    message: Some(res_message),
+                }
+            )]).await.unwrap();
 
-    loop {}
+            loop {
+
+            }
+        });
+    }
 }
 
