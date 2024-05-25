@@ -1,3 +1,4 @@
+use std::io::Cursor;
 use std::net::SocketAddrV4;
 use std::str::FromStr;
 
@@ -8,11 +9,27 @@ use bedrock_rs::proto::login::{handle_login_server_side, LoginServerSideOptions}
 use tokio::main;
 
 use bedrock_rs::core::*;
+use bedrock_rs::nbt::little_endian::NbtLittleEndian;
+use bedrock_rs::nbt::NbtTag;
 use bedrock_rs::proto::gamepacket::GamePacket;
 use bedrock_rs::proto::packets::disconnect::DisconnectPacket;
+use byteorder::{LittleEndian, ReadBytesExt};
 
 #[main]
 async fn main() {
+
+    let mut cur = Cursor::new(std::fs::read("Hoffnung/level.dat").unwrap());
+
+    let ver = cur.read_i32::<LittleEndian>().unwrap();
+    let len = cur.read_i32::<LittleEndian>().unwrap();
+
+    // println!("VER: {ver} | LEN: {len}");
+
+    let (str, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
+
+    println!("STR: {str}");
+    println!("TAG: {tag:?}");
+
     let mut listener = bedrock_rs::proto::listener::Listener::new(
         ListenerConfig {
             name: String::from("My Server"),

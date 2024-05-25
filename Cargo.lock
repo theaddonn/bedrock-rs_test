@@ -85,9 +85,7 @@ dependencies = [
  "bedrock-rs",
  "byteorder",
  "input-macro",
- "miniz_oxide",
  "rand",
- "rusty-leveldb",
  "tokio",
  "varint-rs",
 ]
