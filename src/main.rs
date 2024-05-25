@@ -23,12 +23,12 @@ async fn main() {
     let ver = cur.read_i32::<LittleEndian>().unwrap();
     let len = cur.read_i32::<LittleEndian>().unwrap();
 
-    // println!("VER: {ver} | LEN: {len}");
+    println!("VER: {ver} | LEN: {len}");
 
     let (str, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
 
-    println!("STR: {str}");
-    println!("TAG: {tag:?}");
+    println!("STR: {str:?}");
+    println!("TAG: {tag:#?}");
 
     let mut listener = bedrock_rs::proto::listener::Listener::new(
         ListenerConfig {
