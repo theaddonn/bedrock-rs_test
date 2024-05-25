@@ -12,7 +12,7 @@ use miniz_oxide::inflate::{decompress_to_vec, decompress_to_vec_zlib};
 use rusty_leveldb::compressor::NoneCompressor;
 use rusty_leveldb::{Compressor, CompressorList, Options, DB, LdbIterator};
 use std::rc::Rc;
-use bedrock_rs::core::types::ivar32;
+use bedrock_rs::core::*;
 use bedrock_rs::proto::gamepacket::GamePacket;
 use bedrock_rs::proto::packets::disconnect::DisconnectPacket;
 
