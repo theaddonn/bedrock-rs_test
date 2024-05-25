@@ -1,4 +1,4 @@
-use std::io::Cursor;
+use std::io::{Cursor, Write};
 use std::net::SocketAddrV4;
 use std::str::FromStr;
 
@@ -13,19 +13,16 @@ use bedrock_rs::nbt::little_endian::NbtLittleEndian;
 use bedrock_rs::nbt::NbtTag;
 use bedrock_rs::proto::gamepacket::GamePacket;
 use bedrock_rs::proto::packets::disconnect::DisconnectPacket;
-use byteorder::{LittleEndian, ReadBytesExt};
+use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 
 #[main]
 async fn main() {
-
     let mut cur = Cursor::new(std::fs::read("Hoffnung/level.dat").unwrap());
 
-    let ver = cur.read_i32::<LittleEndian>().unwrap();
-    let len = cur.read_i32::<LittleEndian>().unwrap();
+    println!("VER: {}", cur.read_i32::<LittleEndian>().unwrap());
+    println!("LEN: {}", cur.read_i32::<LittleEndian>().unwrap());
 
-    println!("VER: {ver} | LEN: {len}");
-
-    let (str, tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
+    let (str, mut tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
 
     println!("STR: {str:?}");
     println!("TAG: {tag:#?}");
