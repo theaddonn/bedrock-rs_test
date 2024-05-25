@@ -17,16 +17,6 @@ use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 
 #[main]
 async fn main() {
-    let mut cur = Cursor::new(std::fs::read("Hoffnung/level.dat").unwrap());
-
-    println!("VER: {}", cur.read_i32::<LittleEndian>().unwrap());
-    println!("LEN: {}", cur.read_i32::<LittleEndian>().unwrap());
-
-    let (str, mut tag) = NbtTag::nbt_deserialize::<NbtLittleEndian>(&mut cur).unwrap();
-
-    println!("STR: {str:?}");
-    println!("TAG: {tag:#?}");
-
     let mut listener = bedrock_rs::proto::listener::Listener::new(
         ListenerConfig {
             name: String::from("My Server"),
