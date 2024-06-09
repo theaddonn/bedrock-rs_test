@@ -10,13 +10,15 @@ use tokio::main;
 use bedrock_rs::core::*;
 use bedrock_rs::proto::gamepacket::GamePacket;
 use bedrock_rs::proto::packets::disconnect::DisconnectPacket;
-use bedrock_rs::world::World;
+//use bedrock_rs::world::World;
 
 #[main]
 async fn main() {
-    let world = World::open("C:/Users/adria/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds/cBFbZglOAQA=").unwrap();
 
-    println!("WORLD: \n{:#?}", world);
+
+    //let world = World::open("C:/Users/adria/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds/cBFbZglOAQA=").unwrap();
+
+    //println!("WORLD: \n{:#?}", world);
 
     let mut listener = bedrock_rs::proto::listener::Listener::new_raknet(
         ListenerConfig {
@@ -35,7 +37,7 @@ async fn main() {
         let mut conn = listener.accept().await.unwrap();
 
         tokio::spawn(async move {
-            println!("started!");
+            println!("===== START =====");
 
             let res_message = match handle_login_server_side(&mut conn, LoginServerSideOptions {
                 compression: Compression::None,
@@ -47,9 +49,11 @@ async fn main() {
                 Err(e) => { format!("ERR({e:?})") }
             };
 
+            println!("LOGIN RESULT: {:?}", res_message);
+
             conn.send_gamepackets(vec![GamePacket::Disconnect(
                 DisconnectPacket {
-                    reason: ivar32(0),
+                    reason: VAR::new(0),
                     message: Some(res_message),
                 }
             )]).await.unwrap();

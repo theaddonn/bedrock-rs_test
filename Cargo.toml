@@ -6,11 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bedrock-rs = { path = "../bedrock-rs", features = ["world"] }
+bedrock-rs = { path = "../bedrock-rs", features = [] }
 
 input-macro = "0.2.0"
 
 tokio = { version = "1.37.0", features = ["full"] }
-byteorder = "1.5.0"
 rand = "0.8.5"
-varint-rs = "2.2.0"
+deno_core = "0.287"
