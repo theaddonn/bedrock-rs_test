@@ -40,7 +40,7 @@ async fn main() {
         tokio::spawn(async move {
             println!("===== START =====");
 
-            let mut conn = conn.into_shard(Duration::from_secs(1)).await;
+            let mut conn = conn.into_shard(Duration::from_millis((Duration::from_secs(1).as_millis() / 20) as u64), 256).await;
 
             let res_message = match login_to_server(&mut conn, DefaultLoginProvider::new()).await {
                 Ok(_) => { "success!".to_string() }
@@ -55,6 +55,8 @@ async fn main() {
                     message: Some(res_message),
                 }
             )).await.unwrap();
+
+            conn.close();
         });
     }
 }
