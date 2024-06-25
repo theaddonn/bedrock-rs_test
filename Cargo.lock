@@ -1338,6 +1338,7 @@ dependencies = [
  "nbt",
  "num-derive",
  "num-traits",
+ "packs",
  "proto_core",
  "proto_derive",
  "rak-rs",

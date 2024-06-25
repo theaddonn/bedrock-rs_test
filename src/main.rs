@@ -1,5 +1,6 @@
 use std::net::{SocketAddr, SocketAddrV4};
 use std::str::FromStr;
+use std::thread::sleep;
 use std::time::Duration;
 
 use bedrock_rs::core::*;
@@ -44,10 +45,10 @@ async fn main() {
 
             let res_message = match login_to_server(&mut conn, DefaultLoginProvider::new()).await {
                 Ok(_) => { "success!".to_string() }
-                Err(e) => { format!("ERR({e:?})") }
+                Err(e) => { format!("ERR({e:#?})") }
             };
 
-            println!("LOGIN RESULT: {:?}", res_message);
+            println!("LOGIN RESULT: {}", res_message);
 
             conn.send(GamePacket::Disconnect(
                 DisconnectPacket {
@@ -56,7 +57,7 @@ async fn main() {
                 }
             )).await.unwrap();
 
-            conn.close();
+            conn.close().await.expect("TODO: panic message");
         });
     }
 }
